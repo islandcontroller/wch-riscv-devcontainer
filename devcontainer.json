@@ -1,0 +1,48 @@
+{
+  "name": "WCH-IC RISC-V GNU Toolchain",
+  
+  // Container is built from Dockerfile
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  
+  // Privileged container in order to access /dev
+  "privileged": true,
+  
+  // Mount USB devices (debug probes, UART interfaces, ...)
+  "mounts": [
+    "source=/dev/bus/usb/,target=/dev/bus/usb/,type=bind"
+  ],
+  
+  // Pre-configure settings and extensions
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "files.associations": {
+          "*.c": "c",
+          "*.h": "c",
+          "*.inc": "c",
+          "*.s": "riscv",
+          "*.S": "riscv",
+          "*.asm": "riscv",
+          "*.ld": "linkerscript"
+        },
+        
+        "editor.rulers": [80],
+        
+        "cmake.configureOnOpen": true,
+        "cmake.languageSupport.dotnetPath": "/opt/dotnet/dotnet",
+        "cmake.languageSupport.enableFileAPI": true
+      },
+      "extensions": [
+        "josetr.cmake-language-support-vscode",
+        "ms-vscode.cpptools-extension-pack",
+        "ms-vscode.cmake-tools",
+        "ms-vscode.vscode-embedded-tools",
+        "trond-snekvik.gnu-mapfiles",
+        "zhwu95.riscv",
+        "ZixuanWang.linkerscript"
+      ]
+    }
+  }
+}
