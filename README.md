@@ -1,5 +1,7 @@
 # wch-riscv-devcontainer
-WCH-IC RISC-V development and debugging environment inside a VSCode devcontainer.
+[![License](https://img.shields.io/github/license/islandcontroller/wch-riscv-devcontainer)](LICENSE) [![GitHub](https://shields.io/badge/github-islandcontroller%2Fwch--riscv--devcontainer-black?logo=github)](https://github.com/islandcontroller/wch-riscv-devcontainer) [![Docker Hub](https://shields.io/badge/docker-islandc%2Fwch--riscv--devcontainer-blue?logo=docker)](https://hub.docker.com/r/islandc/wch-riscv-devcontainer) ![Docker Image Version (latest semver)](https://img.shields.io/docker/v/islandc/wch-riscv-devcontainer?sort=semver)
+
+*WCH-IC RISC-V development and debugging environment inside a VSCode devcontainer.*
 
 ![Screenshot](scr.PNG)
 
