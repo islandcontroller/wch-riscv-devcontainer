@@ -4,11 +4,11 @@ WCH-IC RISC-V development and debugging environment inside a VSCode devcontainer
 ![Screenshot](scr.PNG)
 
 ### Packages
-* [Microsoft .NET 6.0 Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/6.0) Version 6.0.22
+* [Microsoft .NET 6.0 Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/6.0) Version 6.0.24
 * [MounRiver MRS Toolchain & Debugger](http://www.mounriver.com/download) Linux_x64 Version 1.80
   * includes WCH-custom GNU toolchain for RISC-V
   * includes WCH-custom OpenOCD debugger
-* CMake Version 3.22
+* [CMake](https://cmake.org/download) Version 3.27.7
 
 ## System Requirements
 * VSCode [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension

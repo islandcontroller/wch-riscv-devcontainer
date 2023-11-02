@@ -12,7 +12,6 @@ USER root
 # Dependencies setup
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-    cmake \
     cu \
     make \
     software-properties-common \
@@ -24,15 +23,27 @@ RUN apt-get update && \
 # Setup dir for packages installation
 WORKDIR /tmp
 
-#- CMake Configurations Storage ------------------------------------------------
+#- CMake -----------------------------------------------------------------------
+ARG CMAKE_URL="https://github.com/Kitware/CMake/releases/download/v3.27.7/cmake-3.27.7-linux-x86_64.tar.gz"
+ARG CMAKE_HASH="https://github.com/Kitware/CMake/releases/download/v3.27.7/cmake-3.27.7-SHA-256.txt"
+
+# Download and install package
+RUN wget -nv ${CMAKE_URL} && \
+    wget -nv ${CMAKE_HASH} && \
+    grep $(basename "${CMAKE_URL}") $(basename "${CMAKE_HASH}") > $(basename "${CMAKE_HASH}.sng") && \
+    sha256sum -c $(basename "${CMAKE_HASH}.sng")
+RUN tar -xf $(basename "${CMAKE_URL}") -C /usr --strip-components=1 && \
+    rm $(basename "${CMAKE_URL}") $(basename "${CMAKE_HASH}") $(basename "${CMAKE_HASH}.sng")
+
+# Prepare configuration storage
 ENV CMAKE_CONFIGS_PATH=/usr/share/cmake/configs.d
 RUN mkdir -p ${CMAKE_CONFIGS_PATH}
 
 #- .NET 6 Runtime --------------------------------------------------------------
-ARG DOTNET_URL="https://download.visualstudio.microsoft.com/download/pr/f812da49-53de-4f59-93d2-742a61229149/35ff2eb90bf2583d21ad25146c291fe4/dotnet-runtime-6.0.22-linux-x64.tar.gz"
-ARG DOTNET_SHA512="c24ed83cd8299963203b3c964169666ed55acaa55e547672714e1f67e6459d8d6998802906a194fc59abcfd1504556267a839c116858ad34c56a2a105dc18d3d"
+ARG DOTNET_URL="https://download.visualstudio.microsoft.com/download/pr/872b4f32-dd0d-49e5-bca3-2b27314286a7/e72d2be582895b7053912deb45a4677d/dotnet-runtime-6.0.24-linux-x64.tar.gz"
+ARG DOTNET_SHA512="3a72ddae17ecc9e5354131f03078f3fbfa1c21d26ada9f254b01cddcb73869cb33bac5fc0aed2200fbb57be939d65829d8f1514cd0889a2f5858d1f1eec136eb"
 
-# Downlaod and install package
+# Download and install package
 RUN wget -nv ${DOTNET_URL} && \
     echo "${DOTNET_SHA512} $(basename ${DOTNET_URL})" > $(basename "${DOTNET_URL}.asc") && \
     sha512sum -c $(basename "${DOTNET_URL}.asc")
