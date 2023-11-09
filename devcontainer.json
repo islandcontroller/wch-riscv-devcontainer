@@ -1,13 +1,13 @@
 {
   "name": "WCH-IC RISC-V GNU Toolchain",
   
-	// Build image locally from provided Dockerfile
-	/*"build": {
-		"dockerfile": "Dockerfile"
-	},*/
+  // Build image locally from provided Dockerfile
+  /*"build": {
+    "dockerfile": "Dockerfile"
+  },*/
 
-	// Pull and use pre-built image from Docker Hub
-	"image": "islandc/wch-riscv-devcontainer",
+  // Pull and use pre-built image from Docker Hub
+  "image": "islandc/wch-riscv-devcontainer",
   
   // Privileged container in order to access /dev
   "privileged": true,
@@ -21,6 +21,14 @@
   "customizations": {
     "vscode": {
       "settings": {
+        "[cmake]": {
+          "editor.tabSize": 8,
+          "editor.insertSpaces": false
+        },
+        "[makefile]": {
+          "editor.tabSize": 8
+        },
+
         "files.associations": {
           "*.c": "c",
           "*.h": "c",
@@ -31,7 +39,13 @@
           "*.ld": "linkerscript"
         },
         
+        "editor.insertSpaces": true,
         "editor.rulers": [80],
+        "editor.tabSize": 2,
+
+        "C_Cpp.default.compilerPath": "/opt/gcc-riscv-none-embed/bin/riscv-none-embed-gcc",
+        "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+        "C_Cpp.default.intelliSenseMode": "linux-gcc-x86",
         
         "cmake.configureOnOpen": true,
         "cmake.languageSupport.dotnetPath": "/opt/dotnet/dotnet",
@@ -39,6 +53,7 @@
       },
       "extensions": [
         "josetr.cmake-language-support-vscode",
+        "keroc.hex-fmt",
         "ms-vscode.cpptools-extension-pack",
         "ms-vscode.cmake-tools",
         "ms-vscode.vscode-embedded-tools",
