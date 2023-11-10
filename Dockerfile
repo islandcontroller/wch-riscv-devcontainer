@@ -30,8 +30,8 @@ ARG CMAKE_HASH="https://github.com/Kitware/CMake/releases/download/v3.27.7/cmake
 
 # Download and install package
 RUN curl -sLO ${CMAKE_URL} && \
-    curl -sL ${CMAKE_HASH} | grep $(basename "${CMAKE_URL}") | sha256sum -c -
-RUN tar -xf $(basename "${CMAKE_URL}") -C /usr --strip-components=1 && \
+    curl -sL ${CMAKE_HASH} | grep $(basename "${CMAKE_URL}") | sha256sum -c - && \
+    tar -xf $(basename "${CMAKE_URL}") -C /usr --strip-components=1 && \
     rm $(basename "${CMAKE_URL}")
 
 # Prepare configuration storage
@@ -45,8 +45,8 @@ ARG DOTNET_INSTALL_DIR="/opt/dotnet"
 
 # Download and install package
 RUN curl -sLO ${DOTNET_URL} && \
-    echo "${DOTNET_SHA512} $(basename ${DOTNET_URL})" | sha512sum -c -
-RUN mkdir -p ${DOTNET_INSTALL_DIR} && \
+    echo "${DOTNET_SHA512} $(basename ${DOTNET_URL})" | sha512sum -c - && \
+    mkdir -p ${DOTNET_INSTALL_DIR} && \
     tar -xf $(basename "${DOTNET_URL}") -C ${DOTNET_INSTALL_DIR} --strip-components=1 && \
     rm $(basename "${DOTNET_URL}")
 ENV PATH=$PATH:${DOTNET_INSTALL_DIR}
@@ -61,10 +61,10 @@ ARG MOUNRIVER_TOOLCHAIN_INSTALL_DIR="/opt/gcc-riscv-none-embed"
 RUN curl -sLO ${MOUNRIVER_URL}
 RUN mkdir -p /tmp/MRS && \
     tar -xf $(basename "${MOUNRIVER_URL}") -C /tmp/MRS --strip-components=1 && \
-    rm $(basename "${MOUNRIVER_URL}")
-RUN mv MRS/beforeinstall/lib* /usr/lib/ && ldconfig
-RUN mv 'MRS/RISC-V Embedded GCC' ${MOUNRIVER_TOOLCHAIN_INSTALL_DIR}
-RUN rm MRS/OpenOCD/bin/wch-arm.cfg && \
+    rm $(basename "${MOUNRIVER_URL}") && \
+    mv MRS/beforeinstall/lib* /usr/lib/ && ldconfig && \
+    mv 'MRS/RISC-V Embedded GCC' ${MOUNRIVER_TOOLCHAIN_INSTALL_DIR} && \
+    rm MRS/OpenOCD/bin/wch-arm.cfg && \
     mv MRS/OpenOCD ${MOUNRIVER_OPENOCD_INSTALL_DIR}
 COPY gcc-riscv-none-embed.cmake ${CMAKE_CONFIGS_PATH}
 COPY svd/*.svd /opt/wch/
@@ -76,5 +76,5 @@ RUN usermod -aG plugdev vscode
 #- User setup ------------------------------------------------------------------
 USER vscode
 
-VOLUME [ "/src" ]
-WORKDIR /src
+VOLUME [ "/workspaces" ]
+WORKDIR /workspaces
