@@ -10,7 +10,22 @@
 * [MounRiver MRS Toolchain & Debugger](http://www.mounriver.com/download) Linux_x64 Version 1.80
   * includes WCH-custom GNU toolchain for RISC-V
   * includes WCH-custom OpenOCD debugger
+* [MounRiver Studio SVD and ISP firmware files](http://www.mounriver.com/download) Update Version 1.84
+  * ISP Firmware: Version `v29`
+  * SVD files:
+    - `CH32V003xx`
+    - `CH32V103xx`
+    - `CH32V203xx`
+    - `CH32V208xx`
+    - `CH32V303xx`
+    - `CH32V305xx`
+    - `CH32V307xx`
+    - `CH56Xxx`
+    - `CH57Xxx`
+    - `CH58Xxx`
+
 * [CMake](https://cmake.org/download) Version 3.27.7
+* [ch32-rs/wchisp](https://github.com/ch32-rs/wchisp/) Unversioned
 
 ## System Requirements
 * VSCode [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension
@@ -32,9 +47,17 @@ For CMake projects:
 Upon first run, an error message may appear in Line 1, Column 1. Try re-running CMake configuration, or run a build.
 
 ### WCH-Link Notes
-You may need to install the WCH-provided udev rules files in order to access the debug probes without root privileges. See `/tmp/MRS/beforeinstall/` inside the container.
+You may need to install the WCH-provided udev rules files in order to access the debug probes without root privileges. See `/opt/wch/rules/` inside the container.
 
-**Note:** the rules file needs to be installed on the **host**!
+> **Note**
+> The rules file needs to be installed on the **host**!
+
+**Firmware update files** are provided in `/opt/wch/firmware/` and can be programmed using the `wchisp` utility. 
+
+> **Note**
+> See the [WCH-Link User Manual](https://www.wch-ic.com/downloads/WCH-LinkUserManual_PDF.html) about updating your programmer and to determine which firmware file to use.
+
+    wchisp flash /opt/wch/firmware/<isp-specific firmware file>
 
 ### OpenOCD Config File
 Configuration files for the OpenOCD debugger are included in `/opt/openocd/bin/`. To start the debugger, run the following command inside the devcontainer terminal:
@@ -51,7 +74,8 @@ To access the WCH-Link serial monitor inside the devcontainer, use the `cu` comm
 
 e.g. "`cu -l /dev/ttyACM0 -s 115200`".
 
-To close the connection, press RETURN/ESC/Ctrl-C, type "`~.`" (tilde, dot) and wait for 3 seconds.
+> **Note**
+> To close the connection, press RETURN/ESC/Ctrl-C, type "`~.`" (tilde, dot) and wait for 3 seconds.
 
 ## Licensing
 

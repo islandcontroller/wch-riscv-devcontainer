@@ -18,6 +18,7 @@ RUN apt-get update && \
     software-properties-common \
     tar \
     udev \
+    unzip \
     usbutils \
     && rm -rf /var/lib/apt/lists/*
 
@@ -56,19 +57,49 @@ ENV PATH=$PATH:${DOTNET_INSTALL_DIR}
 ARG MOUNRIVER_URL="http://file.mounriver.com/tools/MRS_Toolchain_Linux_x64_V1.80.tar.xz"
 ARG MOUNRIVER_OPENOCD_INSTALL_DIR="/opt/openocd"
 ARG MOUNRIVER_TOOLCHAIN_INSTALL_DIR="/opt/gcc-riscv-none-embed"
+ARG MOUNRIVER_RULES_INSTALL_DIR="/opt/wch/rules"
 
 # Download and install package
-RUN curl -sLO ${MOUNRIVER_URL}
-RUN mkdir -p /tmp/MRS && \
-    tar -xf $(basename "${MOUNRIVER_URL}") -C /tmp/MRS --strip-components=1 && \
+RUN curl -sLO ${MOUNRIVER_URL} && \
+    MOUNRIVER_TMP=$(mktemp -d) && \
+    tar -xf $(basename "${MOUNRIVER_URL}") -C $MOUNRIVER_TMP --strip-components=1 && \
     rm $(basename "${MOUNRIVER_URL}") && \
-    mv MRS/beforeinstall/lib* /usr/lib/ && ldconfig && \
-    mv 'MRS/RISC-V Embedded GCC' ${MOUNRIVER_TOOLCHAIN_INSTALL_DIR} && \
-    rm MRS/OpenOCD/bin/wch-arm.cfg && \
-    mv MRS/OpenOCD ${MOUNRIVER_OPENOCD_INSTALL_DIR}
+    mv $MOUNRIVER_TMP/beforeinstall/lib* /usr/lib/ && ldconfig && \
+    mkdir -p ${MOUNRIVER_RULES_INSTALL_DIR} && \
+    mv $MOUNRIVER_TMP/beforeinstall/*.rules ${MOUNRIVER_RULES_INSTALL_DIR} && \
+    mv "$MOUNRIVER_TMP/RISC-V Embedded GCC" ${MOUNRIVER_TOOLCHAIN_INSTALL_DIR} && \
+    rm $MOUNRIVER_TMP/OpenOCD/bin/wch-arm.cfg && \
+    mv $MOUNRIVER_TMP/OpenOCD ${MOUNRIVER_OPENOCD_INSTALL_DIR} && \
+    rm -rf $MOUNRIVER_TMP
 COPY gcc-riscv-none-embed.cmake ${CMAKE_CONFIGS_PATH}
-COPY svd/*.svd /opt/wch/
 ENV PATH=$PATH:${MOUNRIVER_TOOLCHAIN_INSTALL_DIR}/bin:${MOUNRIVER_OPENOCD_INSTALL_DIR}/bin
+
+#- ISP flashing tool -----------------------------------------------------------
+ARG ISPTOOL_URL="https://github.com/ch32-rs/wchisp/releases/download/nightly/wchisp-linux-x64.tar.gz"
+ARG ISPTOOL_INSTALL_DIR="/opt/wchisp"
+
+# Download and install package; Copy firmware files
+RUN curl -sLO ${ISPTOOL_URL} && \
+    mkdir -p ${ISPTOOL_INSTALL_DIR} && \
+    tar -xf $(basename ${ISPTOOL_URL}) -C ${ISPTOOL_INSTALL_DIR} && \
+    rm -rf $(basename ${ISPTOOL_URL})
+ENV PATH=$PATH:${ISPTOOL_INSTALL_DIR}
+
+#- Debugger SVD and ISP Firmware files -----------------------------------------
+ARG UPDATE_URL="http://file.mounriver.com/upgrade/MounRiver_Update_V184.zip"
+ARG UPDATE_FIRMWARE_INSTALL_DIR="/opt/wch/firmware"
+ARG UPDATE_SVD_INSTALL_DIR="/opt/wch/svd"
+
+# Download update package, extract firmware/SVD files and install
+RUN curl -sLO ${UPDATE_URL} && \
+    UPDATE_TMP=$(mktemp -d) && \
+    unzip $(basename ${UPDATE_URL}) -d $UPDATE_TMP && \
+    rm $(basename ${UPDATE_URL}) && \
+    mv $UPDATE_TMP/update/Firmware_Link ${UPDATE_FIRMWARE_INSTALL_DIR} && \
+    mkdir -p ${UPDATE_SVD_INSTALL_DIR} && \
+    for i in $(find $UPDATE_TMP/template/wizard/WCH/RISC-V/ -name *.svd | uniq); do mv $i ${UPDATE_SVD_INSTALL_DIR}; done && \
+    rm -rf $UPDATE_TMP && \
+    ln -s -t ${UPDATE_SVD_INSTALL_DIR}/../ $(ls ${UPDATE_SVD_INSTALL_DIR}/*.svd)
 
 # Add plugdev group for non-root debugger access
 RUN usermod -aG plugdev vscode
