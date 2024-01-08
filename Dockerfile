@@ -26,8 +26,9 @@ RUN apt-get update && \
 WORKDIR /tmp
 
 #- CMake -----------------------------------------------------------------------
-ARG CMAKE_URL="https://github.com/Kitware/CMake/releases/download/v3.27.7/cmake-3.27.7-linux-x86_64.tar.gz"
-ARG CMAKE_HASH="https://github.com/Kitware/CMake/releases/download/v3.27.7/cmake-3.27.7-SHA-256.txt"
+ARG CMAKE_VERSION=3.28.1
+ARG CMAKE_URL="https://github.com/Kitware/CMake/releases/download/v$CMAKE_VERSION/cmake-$CMAKE_VERSION-linux-x86_64.tar.gz"
+ARG CMAKE_HASH="https://github.com/Kitware/CMake/releases/download/v$CMAKE_VERSION/cmake-$CMAKE_VERSION-SHA-256.txt"
 
 # Download and install package
 RUN curl -sLO ${CMAKE_URL} && \
@@ -40,7 +41,8 @@ ENV CMAKE_CONFIGS_PATH=/usr/share/cmake/configs.d
 RUN mkdir -p ${CMAKE_CONFIGS_PATH}
 
 #- .NET 6 Runtime --------------------------------------------------------------
-ARG DOTNET_URL="https://download.visualstudio.microsoft.com/download/pr/0e8de3f9-7fda-46b7-9337-a3709c8e385d/bc29c53eb79fda25abb0fb9be60c6a22/dotnet-runtime-6.0.25-linux-x64.tar.gz"
+ARG DOTNET_VERSION=6.0.25
+ARG DOTNET_URL="https://dotnetcli.azureedge.net/dotnet/Runtime/$DOTNET_VERSION/dotnet-runtime-$DOTNET_VERSION-linux-x64.tar.gz"
 ARG DOTNET_SHA512="9d4cd137353b6340162ca2c381342957e22d6cb419af9198a09f2354ba647ce0ddd007c58e464a47b48ac778ffc2b77569d8ca7921d0819aa92a5ac69d99de27"
 ARG DOTNET_INSTALL_DIR="/opt/dotnet"
 
@@ -53,8 +55,8 @@ RUN curl -sLO ${DOTNET_URL} && \
 ENV PATH=$PATH:${DOTNET_INSTALL_DIR}
 
 #- Mounriver Toolchain & Debugger ----------------------------------------------
-# Package download URL
-ARG MOUNRIVER_URL="http://file.mounriver.com/tools/MRS_Toolchain_Linux_x64_V1.80.tar.xz"
+ARG MOUNRIVER_VERSION=1.80
+ARG MOUNRIVER_URL="http://file.mounriver.com/tools/MRS_Toolchain_Linux_x64_V$MOUNRIVER_VERSION.tar.xz"
 ARG MOUNRIVER_OPENOCD_INSTALL_DIR="/opt/openocd"
 ARG MOUNRIVER_TOOLCHAIN_INSTALL_DIR="/opt/gcc-riscv-none-embed"
 ARG MOUNRIVER_RULES_INSTALL_DIR="/opt/wch/rules"
@@ -86,7 +88,8 @@ RUN curl -sLO ${ISPTOOL_URL} && \
 ENV PATH=$PATH:${ISPTOOL_INSTALL_DIR}
 
 #- Debugger SVD and ISP Firmware files -----------------------------------------
-ARG UPDATE_URL="http://file.mounriver.com/upgrade/MounRiver_Update_V184.zip"
+ARG UPDATE_VERSION=184
+ARG UPDATE_URL="http://file.mounriver.com/upgrade/MounRiver_Update_V$UPDATE_VERSION.zip"
 ARG UPDATE_FIRMWARE_INSTALL_DIR="/opt/wch/firmware"
 ARG UPDATE_SVD_INSTALL_DIR="/opt/wch/svd"
 
