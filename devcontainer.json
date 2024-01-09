@@ -26,7 +26,8 @@
           "editor.insertSpaces": false
         },
         "[makefile]": {
-          "editor.tabSize": 8
+          "editor.tabSize": 8,
+          "editor.insertSpaces": false
         },
 
         "files.associations": {
@@ -43,13 +44,15 @@
         "editor.rulers": [80],
         "editor.tabSize": 2,
 
-        "C_Cpp.default.compilerPath": "/opt/gcc-riscv-none-embed/bin/riscv-none-embed-gcc",
+        "C_Cpp.default.compilerPath": "/opt/gcc-riscv-none-elf/bin/riscv-none-elf-gcc",
         "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
         "C_Cpp.default.intelliSenseMode": "linux-gcc-x86",
         
         "cmake.configureOnOpen": true,
         "cmake.languageSupport.dotnetPath": "/opt/dotnet/dotnet",
-        "cmake.languageSupport.enableFileAPI": true
+        "cmake.languageSupport.enableFileAPI": true,
+        "cmake.showSystemKits": false,
+        "cmake.options.statusBarVisibility": "visible"
       },
       "extensions": [
         "josetr.cmake-language-support-vscode",

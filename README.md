@@ -7,11 +7,11 @@
 
 ### Packages
 * [Microsoft .NET 6.0 Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/6.0) Version 6.0.25
-* [MounRiver MRS Toolchain & Debugger](http://www.mounriver.com/download) Linux_x64 Version 1.80
+* [MounRiver MRS Toolchain & Debugger](http://www.mounriver.com/download) Linux_x64 Version 1.90
   * includes WCH-custom GNU toolchain for RISC-V
   * includes WCH-custom OpenOCD debugger
-* [MounRiver Studio SVD and ISP firmware files](http://www.mounriver.com/download) Update Version 1.84
-  * ISP Firmware: Version `v29`
+* [MounRiver Studio SVD and ISP firmware files](http://www.mounriver.com/download) Update Version 1.91
+  * ISP Firmware: Version `v31`
   * SVD files:
     - `CH32V003xx`
     - `CH32V103xx`
@@ -24,7 +24,7 @@
     - `CH57Xxx`
     - `CH58Xxx`
 
-* [CMake](https://cmake.org/download) Version 3.27.7
+* [CMake](https://cmake.org/download) Version 3.28.1
 * [ch32-rs/wchisp](https://github.com/ch32-rs/wchisp/) Unversioned
 
 ## System Requirements
@@ -38,8 +38,8 @@
 * Select `Dev Containers: Reopen in Container`
 
 For CMake projects:
-* Upon prompt, select the `GCC x.x riscv-none-embed` CMake Kit. 
-  * Alternatively, a toolchain definition file is provided in: `$CMAKE_CONFIGS_PATH/gcc-riscv-none-embed.cmake`.
+* Upon prompt, select the `GCC 12.x riscv-none-elf` CMake Kit. 
+  * Alternatively, a toolchain definition file is provided in: `$CMAKE_CONFIGS_PATH/gcc-riscv-none-elf.cmake`.
 * Run `CMake: Configure`
 * Build using `CMake: Build [F7]`
 
@@ -58,8 +58,7 @@ In order to use USB debug probes within the container, some udev rules need to b
 ### WCH-Link Firmware Update
 **Firmware update files** are provided in `/opt/wch/firmware/` and can be programmed using the `wchisp` utility. 
 
-> **Note**
-> See the [WCH-Link User Manual](https://www.wch-ic.com/downloads/WCH-LinkUserManual_PDF.html) about updating your programmer and to determine which firmware file to use.
+See the [WCH-Link User Manual](https://www.wch-ic.com/downloads/WCH-LinkUserManual_PDF.html) about updating your programmer and to determine which firmware file to use.
 
     wchisp flash /opt/wch/firmware/<isp-specific firmware file>
 
@@ -78,8 +77,7 @@ To access the WCH-Link serial monitor inside the devcontainer, use the `cu` comm
 
 e.g. "`cu -l /dev/ttyACM0 -s 115200`".
 
-> **Note**
-> To close the connection, press RETURN/ESC/Ctrl-C, type "`~.`" (tilde, dot) and wait for 3 seconds.
+To close the connection, press RETURN/ESC/Ctrl-C, type "`~.`" (tilde, dot) and wait for 3 seconds.
 
 ## Licensing
 

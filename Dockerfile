@@ -55,10 +55,10 @@ RUN curl -sLO ${DOTNET_URL} && \
 ENV PATH=$PATH:${DOTNET_INSTALL_DIR}
 
 #- Mounriver Toolchain & Debugger ----------------------------------------------
-ARG MOUNRIVER_VERSION=1.80
+ARG MOUNRIVER_VERSION=1.90
 ARG MOUNRIVER_URL="http://file.mounriver.com/tools/MRS_Toolchain_Linux_x64_V$MOUNRIVER_VERSION.tar.xz"
 ARG MOUNRIVER_OPENOCD_INSTALL_DIR="/opt/openocd"
-ARG MOUNRIVER_TOOLCHAIN_INSTALL_DIR="/opt/gcc-riscv-none-embed"
+ARG MOUNRIVER_TOOLCHAIN_INSTALL_DIR="/opt/gcc-riscv-none-elf"
 ARG MOUNRIVER_RULES_INSTALL_DIR="/opt/wch/rules"
 
 # Download and install package
@@ -69,12 +69,18 @@ RUN curl -sLO ${MOUNRIVER_URL} && \
     mv $MOUNRIVER_TMP/beforeinstall/lib* /usr/lib/ && ldconfig && \
     mkdir -p ${MOUNRIVER_RULES_INSTALL_DIR} && \
     mv $MOUNRIVER_TMP/beforeinstall/*.rules ${MOUNRIVER_RULES_INSTALL_DIR} && \
-    mv "$MOUNRIVER_TMP/RISC-V Embedded GCC" ${MOUNRIVER_TOOLCHAIN_INSTALL_DIR} && \
+    mv $MOUNRIVER_TMP/RISC-V_Embedded_GCC12 ${MOUNRIVER_TOOLCHAIN_INSTALL_DIR} && \
     rm $MOUNRIVER_TMP/OpenOCD/bin/wch-arm.cfg && \
     mv $MOUNRIVER_TMP/OpenOCD ${MOUNRIVER_OPENOCD_INSTALL_DIR} && \
     rm -rf $MOUNRIVER_TMP
-COPY gcc-riscv-none-embed.cmake ${CMAKE_CONFIGS_PATH}
+COPY gcc-riscv-none-elf.cmake ${CMAKE_CONFIGS_PATH}
 ENV PATH=$PATH:${MOUNRIVER_TOOLCHAIN_INSTALL_DIR}/bin:${MOUNRIVER_OPENOCD_INSTALL_DIR}/bin
+
+# Display warning for mis-configured toolchains
+ARG MOUNRIVER_LEGACY_TOOLCHAIN_INSTALL_DIR="/opt/gcc-riscv-none-embed"
+COPY path-info.sh ${MOUNRIVER_LEGACY_TOOLCHAIN_INSTALL_DIR}/bin/path-info.sh
+ENV MOUNRIVER_TOOLCHAIN_INSTALL_DIR=${MOUNRIVER_TOOLCHAIN_INSTALL_DIR}
+RUN for i in $(ls ${MOUNRIVER_TOOLCHAIN_INSTALL_DIR}/bin/riscv-none-elf-*); do k=$(echo "$i" | sed s/-elf/-embed/g); ln -s ${MOUNRIVER_LEGACY_TOOLCHAIN_INSTALL_DIR}/bin/path-info.sh $k; done
 
 #- ISP flashing tool -----------------------------------------------------------
 ARG ISPTOOL_URL="https://github.com/ch32-rs/wchisp/releases/download/nightly/wchisp-linux-x64.tar.gz"
@@ -88,7 +94,7 @@ RUN curl -sLO ${ISPTOOL_URL} && \
 ENV PATH=$PATH:${ISPTOOL_INSTALL_DIR}
 
 #- Debugger SVD and ISP Firmware files -----------------------------------------
-ARG UPDATE_VERSION=184
+ARG UPDATE_VERSION=191
 ARG UPDATE_URL="http://file.mounriver.com/upgrade/MounRiver_Update_V$UPDATE_VERSION.zip"
 ARG UPDATE_FIRMWARE_INSTALL_DIR="/opt/wch/firmware"
 ARG UPDATE_SVD_INSTALL_DIR="/opt/wch/svd"
