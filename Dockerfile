@@ -107,6 +107,14 @@ RUN curl -sLO ${UPDATE_URL} && \
 # Add plugdev group for non-root debugger access
 RUN usermod -aG plugdev vscode
 
+#- Devcontainer utilities ------------------------------------------------------
+ARG UTILS_INSTALL_DIR="/opt/devcontainer/"
+
+# Add setup files and register in path
+COPY setup-devcontainer ${UTILS_INSTALL_DIR}/bin/
+COPY install-rules ${UTILS_INSTALL_DIR}
+ENV PATH=$PATH:${UTILS_INSTALL_DIR}/bin
+
 #- User setup ------------------------------------------------------------------
 USER vscode
 

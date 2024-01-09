@@ -1,0 +1,7 @@
+#!/bin/bash
+
+setup_dir=$(pwd)/.vscode/setup
+
+mkdir -p $setup_dir
+cp /opt/wch/rules/*.rules $setup_dir/
+cp /opt/devcontainer/install-rules $setup_dir/

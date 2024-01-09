@@ -44,14 +44,18 @@ For CMake projects:
 * Build using `CMake: Build [F7]`
 
 ### CMake+IntelliSense Notes
-Upon first run, an error message may appear in Line 1, Column 1. Try re-running CMake configuration, or run a build.
+Upon first run, an error message may appear in Line 1, Column 1. Try re-running CMake configuration, or run a build. If the file is a `.h` header file, it needs to be `#include`'d into a C module.
 
-### WCH-Link Notes
-You may need to install the WCH-provided udev rules files in order to access the debug probes without root privileges. See `/opt/wch/rules/` inside the container.
+### UDEV Rules installation
+In order to use USB debug probes within the container, some udev rules need to be installed on the **host** machine. A setup script has been provided to aid with installation.
+* Run `setup-devcontainer` inside the **container**
+* Close the container, and re-open the work directory on your **host**
+* Run the `install-rules` script inside `.vscode/setup/` on your host machine
 
-> **Note**
-> The rules file needs to be installed on the **host**!
+      cd .vscode/setup
+      sudo ./install-rules
 
+### WCH-Link Firmware Update
 **Firmware update files** are provided in `/opt/wch/firmware/` and can be programmed using the `wchisp` utility. 
 
 > **Note**
