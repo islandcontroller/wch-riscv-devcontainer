@@ -6,8 +6,8 @@
 ![Screenshot](scr.PNG)
 
 ### Packages
-* [Microsoft .NET 6.0 Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/6.0) Version 6.0.27
-* [MounRiver MRS Toolchain & Debugger](http://www.mounriver.com/download) Linux_x64 Version 1.90
+* [Microsoft .NET 6.0 Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/6.0) Version 6.0.28
+* [MounRiver MRS Toolchain & Debugger](http://www.mounriver.com/download) Linux_x64 Version 1.91
   * includes WCH-custom GNU toolchain for RISC-V
   * includes WCH-custom OpenOCD debugger
 * [MounRiver Studio SVD and ISP firmware files](http://www.mounriver.com/download) Update Version 1.91
@@ -24,8 +24,9 @@
     - `CH57Xxx`
     - `CH58Xxx`
 
-* [CMake](https://cmake.org/download) Version 3.28.3
+* [CMake](https://cmake.org/download) Version 3.29.0
 * [ch32-rs/wchisp](https://github.com/ch32-rs/wchisp/) Unversioned
+* [ch32-rs/wlink](https://github.com/ch32-rs/wlink/) Unversioned
 
 ## System Requirements
 * VSCode [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension
@@ -56,7 +57,8 @@ In order to use USB debug probes within the container, some udev rules need to b
       sudo ./install-rules
 
 ### WCH-Link Firmware Update
-**Firmware update files** are provided in `/opt/wch/firmware/` and can be programmed using the `wchisp` utility. 
+**Firmware update files** are provided in `/opt/wch/firmware/` and can be programmed using the `wchisp` utility. See the [`wchisp` GitHub repository](https://github.com/ch32-rs/wchisp/) for more information.
+
 
 See the [WCH-Link User Manual](https://www.wch-ic.com/downloads/WCH-LinkUserManual_PDF.html) about updating your programmer and to determine which firmware file to use.
 
@@ -78,6 +80,12 @@ To access the WCH-Link serial monitor inside the devcontainer, use the `cu` comm
 e.g. "`cu -l /dev/ttyACM0 -s 115200`".
 
 To close the connection, press RETURN/ESC/Ctrl-C, type "`~.`" (tilde, dot) and wait for 3 seconds.
+
+### Flashing a target with pre-built image
+
+To flash a target with a pre-built firmware image, use the included `wlink` utility. See the [`wlink`GitHub repository](https://github.com/ch32-rs/wlink/) for more information.
+
+    wlink flash <hexfile>
 
 ## Licensing
 

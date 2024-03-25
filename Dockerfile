@@ -26,7 +26,7 @@ RUN apt-get update && \
 WORKDIR /tmp
 
 #- CMake -----------------------------------------------------------------------
-ARG CMAKE_VERSION=3.28.3
+ARG CMAKE_VERSION=3.29.0
 ARG CMAKE_URL="https://github.com/Kitware/CMake/releases/download/v$CMAKE_VERSION/cmake-$CMAKE_VERSION-linux-x86_64.tar.gz"
 ARG CMAKE_HASH="https://github.com/Kitware/CMake/releases/download/v$CMAKE_VERSION/cmake-$CMAKE_VERSION-SHA-256.txt"
 
@@ -41,9 +41,9 @@ ENV CMAKE_CONFIGS_PATH=/usr/share/cmake/configs.d
 RUN mkdir -p ${CMAKE_CONFIGS_PATH}
 
 #- .NET 6 Runtime --------------------------------------------------------------
-ARG DOTNET_VERSION=6.0.27
+ARG DOTNET_VERSION=6.0.28
 ARG DOTNET_URL="https://dotnetcli.azureedge.net/dotnet/Runtime/$DOTNET_VERSION/dotnet-runtime-$DOTNET_VERSION-linux-x64.tar.gz"
-ARG DOTNET_SHA512="448c4419e6c5b52e82eebaaf8601bbe668a0c8bb3293a6004125c7305b38072f7d2236ebffcaf4a71901b61b22ce66ae8b077af6321ba14729be385f228be04c"
+ARG DOTNET_SHA512="5e9039c6c83bed02280e6455ee9ec59c9509055ed15d20fb628eca1147c6c3b227579fbffe5d890879b8e62312facf25089b81f4c461797a1a701a220b51d698"
 ARG DOTNET_INSTALL_DIR="/opt/dotnet"
 
 # Download and install package
@@ -55,7 +55,7 @@ RUN curl -sLO ${DOTNET_URL} && \
 ENV PATH=$PATH:${DOTNET_INSTALL_DIR}
 
 #- Mounriver Toolchain & Debugger ----------------------------------------------
-ARG MOUNRIVER_VERSION=1.90
+ARG MOUNRIVER_VERSION=1.91
 ARG MOUNRIVER_URL="http://file.mounriver.com/tools/MRS_Toolchain_Linux_x64_V$MOUNRIVER_VERSION.tar.xz"
 ARG MOUNRIVER_OPENOCD_INSTALL_DIR="/opt/openocd"
 ARG MOUNRIVER_TOOLCHAIN_INSTALL_DIR="/opt/gcc-riscv-none-elf"
@@ -110,8 +110,16 @@ RUN curl -sLO ${UPDATE_URL} && \
     rm -rf $UPDATE_TMP && \
     ln -s -t ${UPDATE_SVD_INSTALL_DIR}/../ $(ls ${UPDATE_SVD_INSTALL_DIR}/*.svd)
 
-# Add plugdev group for non-root debugger access
-RUN usermod -aG plugdev vscode
+#- Target flasing tool ---------------------------------------------------------
+ARG FLASHTOOL_URL="https://github.com/ch32-rs/wlink/releases/download/nightly/wlink-linux-x64.tar.gz"
+ARG FLASHTOOL_INSTALL_DIR="/opt/wlink"
+
+# Download and install package
+RUN curl -sLO ${FLASHTOOL_URL} && \
+    mkdir -p ${FLASHTOOL_INSTALL_DIR} && \
+    tar -xf $(basename ${FLASHTOOL_URL}) -C ${FLASHTOOL_INSTALL_DIR} && \
+    rm -rf $(basename ${FLASHTOOL_URL})
+ENV PATH=$PATH:${FLASHTOOL_INSTALL_DIR}
 
 #- Devcontainer utilities ------------------------------------------------------
 ARG UTILS_INSTALL_DIR="/opt/devcontainer/"
@@ -122,6 +130,9 @@ COPY install-rules ${UTILS_INSTALL_DIR}
 ENV PATH=$PATH:${UTILS_INSTALL_DIR}/bin
 
 #- User setup ------------------------------------------------------------------
+# Add plugdev group for non-root debugger access
+RUN usermod -aG plugdev vscode
+
 USER vscode
 
 VOLUME [ "/workspaces" ]
