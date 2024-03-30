@@ -30,12 +30,12 @@
 
 ## System Requirements
 * VSCode [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension
-* (WSL only) [usbipd-win](https://learn.microsoft.com/en-us/windows/wsl/connect-usb) (Windows *and* WSL parts installed!)
+* (WSL only) [usbipd-win](https://learn.microsoft.com/en-us/windows/wsl/connect-usb)
 
 ## Usage
 * Include this repo as `.devcontainer` in the root of your project
 * Connect debug probe 
-  * (WSL only) attach to WSL from within Windows: `usbipd wsl attach --busid <...> -a`
+  * (WSL only) attach to WSL using `usbipd attach --wsl --busid <...>`. **This needs to be completed before starting the Dev Container.**
 * Select `Dev Containers: Reopen in Container`
 
 For CMake projects:
