@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
-
+      
       - name: Extract metadata for Docker (SemVer)
         id: meta
         uses: docker/metadata-action@v5
@@ -25,6 +25,22 @@ jobs:
             type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
+      
+      - name: Fetch cache repo
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ secrets.CACHE_GITHUB_USER }}/${{ secrets.CACHE_USER_REPO }}
+          token: ${{ secrets.CACHE_ACCESS_TOKEN }}
+          path: .cache
+      
+      - name: Retrieve cached dependencies
+        env:
+          CACHE_ACCESS_TOKEN: ${{ secrets.CACHE_ACCESS_TOKEN }}
+          CACHE_GITHUB_USER: ${{ secrets.CACHE_GITHUB_USER }}
+          CACHE_USER_REPO: ${{ secrets.CACHE_USER_REPO }}
+          CACHE_REPO_TAG: v1.91.0
+        run: |
+          .cache/fetch_cache.sh
       
       - name: Login to Docker Hub
         uses: docker/login-action@v3

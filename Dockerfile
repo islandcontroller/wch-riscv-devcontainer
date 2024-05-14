@@ -56,13 +56,17 @@ ENV PATH=$PATH:${DOTNET_INSTALL_DIR}
 
 #- Mounriver Toolchain & Debugger ----------------------------------------------
 ARG MOUNRIVER_VERSION=1.91
-ARG MOUNRIVER_URL="http://file.mounriver.com/tools/MRS_Toolchain_Linux_x64_V$MOUNRIVER_VERSION.tar.xz"
+#ARG MOUNRIVER_URL="http://file.mounriver.com/tools/MRS_Toolchain_Linux_x64_V$MOUNRIVER_VERSION.tar.xz"
+ARG MOUNRIVER_URL="/tmp/MRS_Toolchain_Linux_x64_V$MOUNRIVER_VERSION.tar.xz"
+ARG MOUNRIVER_MD5="2ab489198facf89176291c62c6bfe370"
 ARG MOUNRIVER_OPENOCD_INSTALL_DIR="/opt/openocd"
 ARG MOUNRIVER_TOOLCHAIN_INSTALL_DIR="/opt/gcc-riscv-none-elf"
 ARG MOUNRIVER_RULES_INSTALL_DIR="/opt/wch/rules"
 
 # Download and install package
-RUN curl -sLO ${MOUNRIVER_URL} && \
+#RUN curl -sLO ${MOUNRIVER_URL} && \
+COPY MRS_Toolchain_Linux_x64_V$MOUNRIVER_VERSION.tar.xz /tmp
+RUN echo "${MOUNRIVER_MD5} $(basename ${MOUNRIVER_URL})" | md5sum -c - && \
     MOUNRIVER_TMP=$(mktemp -d) && \
     tar -xf $(basename "${MOUNRIVER_URL}") -C $MOUNRIVER_TMP --strip-components=1 && \
     rm $(basename "${MOUNRIVER_URL}") && \
@@ -95,12 +99,16 @@ ENV PATH=$PATH:${ISPTOOL_INSTALL_DIR}
 
 #- Debugger SVD and ISP Firmware files -----------------------------------------
 ARG UPDATE_VERSION=191
-ARG UPDATE_URL="http://file.mounriver.com/upgrade/MounRiver_Update_V$UPDATE_VERSION.zip"
+#ARG UPDATE_URL="http://file.mounriver.com/upgrade/MounRiver_Update_V$UPDATE_VERSION.zip"
+ARG UPDATE_URL="/tmp/MounRiver_Update_V$UPDATE_VERSION.zip"
+ARG UPDATE_MD5="fadf314169815d819fbc477891859259"
 ARG UPDATE_FIRMWARE_INSTALL_DIR="/opt/wch/firmware"
 ARG UPDATE_SVD_INSTALL_DIR="/opt/wch/svd"
 
 # Download update package, extract firmware/SVD files and install
-RUN curl -sLO ${UPDATE_URL} && \
+#RUN curl -sLO ${UPDATE_URL} && \
+COPY MounRiver_Update_V$UPDATE_VERSION.zip /tmp
+RUN echo "${UPDATE_MD5} $(basename ${UPDATE_URL})" | md5sum -c - && \
     UPDATE_TMP=$(mktemp -d) && \
     unzip $(basename ${UPDATE_URL}) -d $UPDATE_TMP && \
     rm $(basename ${UPDATE_URL}) && \
