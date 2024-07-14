@@ -6,7 +6,7 @@
 ![Screenshot](scr.PNG)
 
 ### Packages
-* [Microsoft .NET 6.0 Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/6.0) Version 6.0.29
+* [Microsoft .NET 6.0 Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/6.0) Version 6.0.32
 * [MounRiver MRS Toolchain & Debugger](http://www.mounriver.com/download) Linux_x64 Version 1.91
   * includes WCH-custom GNU toolchain for RISC-V
   * includes WCH-custom OpenOCD debugger
@@ -24,7 +24,7 @@
     - `CH57Xxx`
     - `CH58Xxx`
 
-* [CMake](https://cmake.org/download) Version 3.29.2
+* [CMake](https://cmake.org/download) Version 3.30.0
 * [ch32-rs/wchisp](https://github.com/ch32-rs/wchisp/) Unversioned
 * [ch32-rs/wlink](https://github.com/ch32-rs/wlink/) Unversioned
 
