@@ -1,0 +1,8 @@
+#!/bin/sh
+
+if ! [ -x /usr/bin/wine ]; then
+  echo "WINE is not installed. Please run 'setup-devcontainer --install-wine' (see README)"
+  exit 1
+fi
+
+/usr/bin/wine /opt/wch/wasm53b/WASM53B.EXE $@

@@ -7,7 +7,7 @@
 
 ### Packages
 * [Microsoft .NET 6.0 Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/6.0) Version 6.0.32
-* [MounRiver MRS Toolchain & Debugger](http://www.mounriver.com/download) Linux_x64 Version 1.91
+* [MounRiver MRS Toolchain & Debugger](http://www.mounriver.com/download) Linux_x64 Version 1.92
   * includes WCH-custom GNU toolchain for RISC-V
   * includes WCH-custom OpenOCD debugger
 * [MounRiver Studio SVD and ISP firmware files](http://www.mounriver.com/download) Update Version 1.91
@@ -23,6 +23,7 @@
     - `CH56Xxx`
     - `CH57Xxx`
     - `CH58Xxx`
+* [CH32X035 PIOC Assembler](https://github.com/openwch/ch32x035/tree/main/EVT/EXAM/PIOC/Tool_Manual/Tool) Version 3.1
 
 * [CMake](https://cmake.org/download) Version 3.30.0
 * [ch32-rs/wchisp](https://github.com/ch32-rs/wchisp/) Unversioned
@@ -86,6 +87,18 @@ To close the connection, press RETURN/ESC/Ctrl-C, type "`~.`" (tilde, dot) and w
 To flash a target with a pre-built firmware image, use the included `wlink` utility. See the [`wlink`GitHub repository](https://github.com/ch32-rs/wlink/) for more information.
 
     wlink flash <hexfile>
+
+### Running PIOC (CH53x) assembler
+The CH32X035 *PIOC* uses a custom CPU architecture, hence at the moment only the WCH-provided assembler can be used to build PIOC binaries.
+In order to run the assembler, a 32-bit WINE installation inside the container is required (~1 GiB installation).
+* Run `setup-devcontainer --install-wine` inside the container.
+* Run the compiler with 
+
+      wasm53b <asm file name>
+
+* Convert output binary to C-array
+
+      xxd -i <binary file name> <C source file name>
 
 ## Licensing
 

@@ -55,10 +55,10 @@ RUN curl -sLO ${DOTNET_URL} && \
 ENV PATH=$PATH:${DOTNET_INSTALL_DIR}
 
 #- Mounriver Toolchain & Debugger ----------------------------------------------
-ARG MOUNRIVER_VERSION=1.91
+ARG MOUNRIVER_VERSION=1.92
 #ARG MOUNRIVER_URL="http://file.mounriver.com/tools/MRS_Toolchain_Linux_x64_V$MOUNRIVER_VERSION.tar.xz"
 ARG MOUNRIVER_URL="/tmp/MRS_Toolchain_Linux_x64_V$MOUNRIVER_VERSION.tar.xz"
-ARG MOUNRIVER_MD5="2ab489198facf89176291c62c6bfe370"
+ARG MOUNRIVER_MD5="370603b2bf606ac1ccb15531bd22f012"
 ARG MOUNRIVER_OPENOCD_INSTALL_DIR="/opt/openocd"
 ARG MOUNRIVER_TOOLCHAIN_INSTALL_DIR="/opt/gcc-riscv-none-elf"
 ARG MOUNRIVER_RULES_INSTALL_DIR="/opt/wch/rules"
@@ -117,6 +117,19 @@ RUN echo "${UPDATE_MD5} $(basename ${UPDATE_URL})" | md5sum -c - && \
     for i in $(find $UPDATE_TMP/template/wizard/WCH/RISC-V/ -name *.svd | uniq); do mv $i ${UPDATE_SVD_INSTALL_DIR}; done && \
     rm -rf $UPDATE_TMP && \
     ln -s -t ${UPDATE_SVD_INSTALL_DIR}/../ $(ls ${UPDATE_SVD_INSTALL_DIR}/*.svd)
+
+#- CH32X035 PIOC assembler -----------------------------------------------------
+ARG WASM53B_COMMIT="3c09f65938122733a0af728c30999bac51a9abbf"
+ARG WASM53B_URL="https://github.com/openwch/ch32x035/raw/${WASM53B_COMMIT}/EVT/EXAM/PIOC/Tool_Manual/Tool/WASM53B.EXE"
+ARG WASM53B_MD5="52567df6cbdeb724d2a3cf1a40122ee7"
+ARG WASM53B_INSTALL_DIR="/opt/wch/wasm53b"
+
+# Download executable, verify and copy to install dir
+COPY wasm53b ${WASM53B_INSTALL_DIR}/
+RUN curl -sLO ${WASM53B_URL} && \
+    echo "${WASM53B_MD5} $(basename ${WASM53B_URL})" | md5sum -c - && \
+    mv $(basename ${WASM53B_URL}) ${WASM53B_INSTALL_DIR}
+ENV PATH=$PATH:${WASM53B_INSTALL_DIR}
 
 #- Target flasing tool ---------------------------------------------------------
 ARG FLASHTOOL_URL="https://github.com/ch32-rs/wlink/releases/download/nightly/wlink-linux-x64.tar.gz"

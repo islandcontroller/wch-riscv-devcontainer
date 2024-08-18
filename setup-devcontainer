@@ -1,7 +1,14 @@
 #!/bin/bash
 
-setup_dir=$(pwd)/.vscode/setup
+case $1 in
+    --install-wine)
+        sudo bash -c 'dpkg --add-architecture i386 && apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y wine32:i386'
+        ;;
 
-mkdir -p $setup_dir
-cp /opt/wch/rules/*.rules $setup_dir/
-cp /opt/devcontainer/install-rules $setup_dir/
+    *)
+        setup_dir=$(pwd)/.vscode/setup
+        mkdir -p $setup_dir
+        cp /opt/wch/rules/*.rules $setup_dir/
+        cp /opt/devcontainer/install-rules $setup_dir/
+        ;;
+esac
