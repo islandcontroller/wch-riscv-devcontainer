@@ -6,7 +6,7 @@
 ![Screenshot](scr.PNG)
 
 ### Packages
-* [Microsoft .NET 6.0 Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/6.0) Version 6.0.33
+* [Microsoft .NET 6.0 Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/6.0) Version 6.0.36
 * [MounRiver MRS Toolchain & Debugger](http://www.mounriver.com/download) Linux_x64 Version 1.92
   * includes WCH-custom GNU toolchain for RISC-V
   * includes WCH-custom OpenOCD debugger
@@ -25,9 +25,9 @@
     - `CH58Xxx`
 * [CH32X035 PIOC Assembler](https://github.com/openwch/ch32x035/tree/main/EVT/EXAM/PIOC/Tool_Manual/Tool) Version 3.1
 
-* [CMake](https://cmake.org/download) Version 3.30.2
-* [ch32-rs/wchisp](https://github.com/ch32-rs/wchisp/) Unversioned
-* [ch32-rs/wlink](https://github.com/ch32-rs/wlink/) Unversioned
+* [CMake](https://cmake.org/download) Version 3.31.2
+* [ch32-rs/wchisp](https://github.com/ch32-rs/wchisp/) Version 0.3.0
+* [ch32-rs/wlink](https://github.com/ch32-rs/wlink/) Version 0.1.1
 
 ## System Requirements
 * VSCode [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension

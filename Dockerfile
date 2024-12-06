@@ -26,7 +26,7 @@ RUN apt-get update && \
 WORKDIR /tmp
 
 #- CMake -----------------------------------------------------------------------
-ARG CMAKE_VERSION=3.30.2
+ARG CMAKE_VERSION=3.31.2
 ARG CMAKE_URL="https://github.com/Kitware/CMake/releases/download/v$CMAKE_VERSION/cmake-$CMAKE_VERSION-linux-x86_64.tar.gz"
 ARG CMAKE_HASH="https://github.com/Kitware/CMake/releases/download/v$CMAKE_VERSION/cmake-$CMAKE_VERSION-SHA-256.txt"
 
@@ -41,9 +41,9 @@ ENV CMAKE_CONFIGS_PATH=/usr/share/cmake/configs.d
 RUN mkdir -p ${CMAKE_CONFIGS_PATH}
 
 #- .NET 6 Runtime --------------------------------------------------------------
-ARG DOTNET_VERSION=6.0.33
+ARG DOTNET_VERSION=6.0.36
 ARG DOTNET_URL="https://dotnetcli.azureedge.net/dotnet/Runtime/$DOTNET_VERSION/dotnet-runtime-$DOTNET_VERSION-linux-x64.tar.gz"
-ARG DOTNET_SHA512="0892015544d8903999f8e0fadab6b4b91eb180e495fa5e36c1a755b1d42e134858b7bdbfd60d1880650d9c528d07e31b9ccfc73e650e5d890a955902a89139cf"
+ARG DOTNET_SHA512="afb6018fcabec468ccd7ae2f1131d8c9de7f4de7645b8f0c223efbbdbfdc515fb0642a399ebfe372c02044416c4cae463c9c802cd156b9da4181efff0e33ee94"
 ARG DOTNET_INSTALL_DIR="/opt/dotnet"
 
 # Download and install package
@@ -87,13 +87,14 @@ ENV MOUNRIVER_TOOLCHAIN_INSTALL_DIR=${MOUNRIVER_TOOLCHAIN_INSTALL_DIR}
 RUN for i in $(ls ${MOUNRIVER_TOOLCHAIN_INSTALL_DIR}/bin/riscv-none-elf-*); do k=$(echo "$i" | sed s/-elf/-embed/g); ln -s ${MOUNRIVER_LEGACY_TOOLCHAIN_INSTALL_DIR}/bin/path-info.sh $k; done
 
 #- ISP flashing tool -----------------------------------------------------------
-ARG ISPTOOL_URL="https://github.com/ch32-rs/wchisp/releases/download/nightly/wchisp-linux-x64.tar.gz"
+ARG ISPTOOL_VERSION=0.3.0
+ARG ISPTOOL_URL="https://github.com/ch32-rs/wchisp/releases/download/v${ISPTOOL_VERSION}/wchisp-v${ISPTOOL_VERSION}-linux-x64.tar.gz"
 ARG ISPTOOL_INSTALL_DIR="/opt/wchisp"
 
 # Download and install package; Copy firmware files
 RUN curl -sLO ${ISPTOOL_URL} && \
     mkdir -p ${ISPTOOL_INSTALL_DIR} && \
-    tar -xf $(basename ${ISPTOOL_URL}) -C ${ISPTOOL_INSTALL_DIR} && \
+    tar -xf $(basename ${ISPTOOL_URL}) -C ${ISPTOOL_INSTALL_DIR} --strip-components=1 && \
     rm -rf $(basename ${ISPTOOL_URL})
 ENV PATH=$PATH:${ISPTOOL_INSTALL_DIR}
 
@@ -132,13 +133,14 @@ RUN curl -sLO ${WASM53B_URL} && \
 ENV PATH=$PATH:${WASM53B_INSTALL_DIR}
 
 #- Target flasing tool ---------------------------------------------------------
-ARG FLASHTOOL_URL="https://github.com/ch32-rs/wlink/releases/download/nightly/wlink-linux-x64.tar.gz"
+ARG FLASHTOOL_VERSION=0.1.1
+ARG FLASHTOOL_URL="https://github.com/ch32-rs/wlink/releases/download/v${FLASHTOOL_VERSION}/wlink-v${FLASHTOOL_VERSION}-linux-x64.tar.gz"
 ARG FLASHTOOL_INSTALL_DIR="/opt/wlink"
 
 # Download and install package
 RUN curl -sLO ${FLASHTOOL_URL} && \
     mkdir -p ${FLASHTOOL_INSTALL_DIR} && \
-    tar -xf $(basename ${FLASHTOOL_URL}) -C ${FLASHTOOL_INSTALL_DIR} && \
+    tar -xf $(basename ${FLASHTOOL_URL}) -C ${FLASHTOOL_INSTALL_DIR} --strip-components=1 && \
     rm -rf $(basename ${FLASHTOOL_URL})
 ENV PATH=$PATH:${FLASHTOOL_INSTALL_DIR}
 
