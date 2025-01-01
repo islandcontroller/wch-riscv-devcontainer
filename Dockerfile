@@ -55,30 +55,46 @@ RUN curl -sLO ${DOTNET_URL} && \
 ENV PATH=$PATH:${DOTNET_INSTALL_DIR}
 
 #- Mounriver Toolchain & Debugger ----------------------------------------------
-ARG MOUNRIVER_VERSION=1.92
-#ARG MOUNRIVER_URL="http://file.mounriver.com/tools/MRS_Toolchain_Linux_x64_V$MOUNRIVER_VERSION.tar.xz"
-ARG MOUNRIVER_URL="/tmp/MRS_Toolchain_Linux_x64_V$MOUNRIVER_VERSION.tar.xz"
-ARG MOUNRIVER_MD5="370603b2bf606ac1ccb15531bd22f012"
+ARG MOUNRIVER_VERSION=210
+#ARG MOUNRIVER_URL="http://file-oss.mounriver.com/upgrade/MounRiverStudio_Linux_X64_V${MOUNRIVER_VERSION}.tar.xz"
+ARG MOUNRIVER_URL="/tmp/MounRiverStudio_Linux_X64_V${MOUNRIVER_VERSION}.tar.xz"
+ARG MOUNRIVER_MD5="53daec6011d4b5b9302681a7237ffeb4"
 ARG MOUNRIVER_OPENOCD_INSTALL_DIR="/opt/openocd"
 ARG MOUNRIVER_TOOLCHAIN_INSTALL_DIR="/opt/gcc-riscv-none-elf"
 ARG MOUNRIVER_RULES_INSTALL_DIR="/opt/wch/rules"
+ARG MOUNRIVER_FIRMWARE_INSTALL_DIR="/opt/wch/firmware"
+ARG MOUNRIVER_SVD_INSTALL_DIR="/opt/wch/svd"
 
 # Download and install package
-#RUN curl -sLO ${MOUNRIVER_URL} && \
-COPY MRS_Toolchain_Linux_x64_V$MOUNRIVER_VERSION.tar.xz /tmp
-RUN echo "${MOUNRIVER_MD5} $(basename ${MOUNRIVER_URL})" | md5sum -c - && \
+#RUN curl -sLO ${MOUNRIVER_URL}
+COPY MounRiverStudio_Linux_X64_V${MOUNRIVER_VERSION}.tar.xz /tmp
+RUN mkdir -p ${MOUNRIVER_RULES_INSTALL_DIR} && \
+    mkdir -p ${MOUNRIVER_TOOLCHAIN_INSTALL_DIR} && \
+    mkdir -p ${MOUNRIVER_SVD_INSTALL_DIR} && \
+    echo "${MOUNRIVER_MD5} $(basename ${MOUNRIVER_URL})" | md5sum -c - && \
     MOUNRIVER_TMP=$(mktemp -d) && \
     tar -xf $(basename "${MOUNRIVER_URL}") -C $MOUNRIVER_TMP --strip-components=1 && \
     rm $(basename "${MOUNRIVER_URL}") && \
     mv $MOUNRIVER_TMP/beforeinstall/lib* /usr/lib/ && ldconfig && \
-    mkdir -p ${MOUNRIVER_RULES_INSTALL_DIR} && \
     mv $MOUNRIVER_TMP/beforeinstall/*.rules ${MOUNRIVER_RULES_INSTALL_DIR} && \
-    mv $MOUNRIVER_TMP/RISC-V_Embedded_GCC12 ${MOUNRIVER_TOOLCHAIN_INSTALL_DIR} && \
-    rm $MOUNRIVER_TMP/OpenOCD/bin/wch-arm.cfg && \
-    mv $MOUNRIVER_TMP/OpenOCD ${MOUNRIVER_OPENOCD_INSTALL_DIR} && \
+    mv $MOUNRIVER_TMP/MRS-linux-x64/resources/app/resources/linux/components/WCH/Toolchain/RISC-V\ Embedded\ GCC12 ${MOUNRIVER_TOOLCHAIN_INSTALL_DIR}/wch && \
+    rm $MOUNRIVER_TMP/MRS-linux-x64/resources/app/resources/linux/components/WCH/OpenOCD/OpenOCD/bin/wch-arm.cfg && \
+    mv $MOUNRIVER_TMP/MRS-linux-x64/resources/app/resources/linux/components/WCH/OpenOCD/OpenOCD ${MOUNRIVER_OPENOCD_INSTALL_DIR} && \
+    mv $MOUNRIVER_TMP/MRS-linux-x64/resources/app/resources/linux/components/WCH/Others/Firmware_Link/default ${MOUNRIVER_FIRMWARE_INSTALL_DIR} && \
+    for i in $(find $MOUNRIVER_TMP/MRS-linux-x64/resources/app/resources/linux/components/WCH/SDK/default/RISC-V/ -name *.svd | uniq); do mv $i ${MOUNRIVER_SVD_INSTALL_DIR}; done && \
     rm -rf $MOUNRIVER_TMP
 COPY gcc-riscv-none-elf.cmake ${CMAKE_CONFIGS_PATH}
 ENV PATH=$PATH:${MOUNRIVER_TOOLCHAIN_INSTALL_DIR}/bin:${MOUNRIVER_OPENOCD_INSTALL_DIR}/bin
+
+# Fix broken openocd file permissions
+RUN chmod +x ${MOUNRIVER_OPENOCD_INSTALL_DIR}/bin/openocd
+
+# Workaround: link to mis-named toolchain binaries
+RUN mkdir -p ${MOUNRIVER_TOOLCHAIN_INSTALL_DIR}/bin && \
+    for i in $(ls ${MOUNRIVER_TOOLCHAIN_INSTALL_DIR}/wch/bin/riscv-wch-elf-*); do k=$(echo "$(basename $i)" | sed s/wch/none/g); ln -s ${MOUNRIVER_TOOLCHAIN_INSTALL_DIR}/wch/bin/$(basename $i) ${MOUNRIVER_TOOLCHAIN_INSTALL_DIR}/bin/$k; done
+
+# Create links to SVD files
+RUN ln -s -t ${MOUNRIVER_SVD_INSTALL_DIR}/../ $(ls ${MOUNRIVER_SVD_INSTALL_DIR}/*.svd)
 
 # Display warning for mis-configured toolchains
 ARG MOUNRIVER_LEGACY_TOOLCHAIN_INSTALL_DIR="/opt/gcc-riscv-none-embed"
@@ -97,27 +113,6 @@ RUN curl -sLO ${ISPTOOL_URL} && \
     tar -xf $(basename ${ISPTOOL_URL}) -C ${ISPTOOL_INSTALL_DIR} --strip-components=1 && \
     rm -rf $(basename ${ISPTOOL_URL})
 ENV PATH=$PATH:${ISPTOOL_INSTALL_DIR}
-
-#- Debugger SVD and ISP Firmware files -----------------------------------------
-ARG UPDATE_VERSION=191
-#ARG UPDATE_URL="http://file.mounriver.com/upgrade/MounRiver_Update_V$UPDATE_VERSION.zip"
-ARG UPDATE_URL="/tmp/MounRiver_Update_V$UPDATE_VERSION.zip"
-ARG UPDATE_MD5="fadf314169815d819fbc477891859259"
-ARG UPDATE_FIRMWARE_INSTALL_DIR="/opt/wch/firmware"
-ARG UPDATE_SVD_INSTALL_DIR="/opt/wch/svd"
-
-# Download update package, extract firmware/SVD files and install
-#RUN curl -sLO ${UPDATE_URL} && \
-COPY MounRiver_Update_V$UPDATE_VERSION.zip /tmp
-RUN echo "${UPDATE_MD5} $(basename ${UPDATE_URL})" | md5sum -c - && \
-    UPDATE_TMP=$(mktemp -d) && \
-    unzip $(basename ${UPDATE_URL}) -d $UPDATE_TMP && \
-    rm $(basename ${UPDATE_URL}) && \
-    mv $UPDATE_TMP/update/Firmware_Link ${UPDATE_FIRMWARE_INSTALL_DIR} && \
-    mkdir -p ${UPDATE_SVD_INSTALL_DIR} && \
-    for i in $(find $UPDATE_TMP/template/wizard/WCH/RISC-V/ -name *.svd | uniq); do mv $i ${UPDATE_SVD_INSTALL_DIR}; done && \
-    rm -rf $UPDATE_TMP && \
-    ln -s -t ${UPDATE_SVD_INSTALL_DIR}/../ $(ls ${UPDATE_SVD_INSTALL_DIR}/*.svd)
 
 #- CH32X035 PIOC assembler -----------------------------------------------------
 ARG WASM53B_COMMIT="3c09f65938122733a0af728c30999bac51a9abbf"

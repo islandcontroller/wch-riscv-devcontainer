@@ -7,22 +7,11 @@
 
 ### Packages
 * [Microsoft .NET 6.0 Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/6.0) Version 6.0.36
-* [MounRiver MRS Toolchain & Debugger](http://www.mounriver.com/download) Linux_x64 Version 1.92
-  * includes WCH-custom GNU toolchain for RISC-V
-  * includes WCH-custom OpenOCD debugger
-* [MounRiver Studio SVD and ISP firmware files](http://www.mounriver.com/download) Update Version 1.91
-  * ISP Firmware: Version `v31`
-  * SVD files:
-    - `CH32V003xx`
-    - `CH32V103xx`
-    - `CH32V203xx`
-    - `CH32V208xx`
-    - `CH32V303xx`
-    - `CH32V305xx`
-    - `CH32V307xx`
-    - `CH56Xxx`
-    - `CH57Xxx`
-    - `CH58Xxx`
+* [MounRiver Studio II (MRS2)](http://www.mounriver.com/download) Version 2.1.0
+  * WCH-custom GNU toolchain for RISC-V Version 12.2.0
+  * WCH-custom OpenOCD Version 0.11.0
+  * ISP Firmware Version `v36`
+  * SVD files
 * [CH32X035 PIOC Assembler](https://github.com/openwch/ch32x035/tree/main/EVT/EXAM/PIOC/Tool_Manual/Tool) Version 3.1
 
 * [CMake](https://cmake.org/download) Version 3.31.2
