@@ -89,6 +89,21 @@ In order to run the assembler, a 32-bit WINE installation inside the container i
 
       xxd -i <binary file name> <C source file name>
 
+## Building
+
+To build the image yourself, either download the [Linux MounRiver Studio II (MRS2)](http://www.mounriver.com/download) package manually and place it in the build directory, or enable the download in the [dockerfile](Dockerfile#L59-L68):
+
+```dockerfile
+ARG MOUNRIVER_URL="http://file-oss.mounriver.com/upgrade/MounRiverStudio_Linux_X64_V${MOUNRIVER_VERSION}.tar.xz"
+#ARG MOUNRIVER_URL="/tmp/MounRiverStudio_Linux_X64_V${MOUNRIVER_VERSION}.tar.xz"
+...
+
+# Download and install package
+RUN curl -sLO ${MOUNRIVER_URL}
+#COPY MounRiverStudio_Linux_X64_V${MOUNRIVER_VERSION}.tar.xz /tmp
+...
+```
+
 ## Licensing
 
 If not stated otherwise, the contents of this project are licensed under The MIT License. The full license text is provided in the [`LICENSE`](LICENSE) file.
