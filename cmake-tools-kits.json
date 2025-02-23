@@ -1,0 +1,6 @@
+[
+	{
+		"name": "WCH RISC-V Toolchain 12.2",
+		"toolchainFile": "/opt/gcc-riscv-none-elf/gcc-riscv-none-elf.cmake"
+	}
+]

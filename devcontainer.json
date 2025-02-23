@@ -51,8 +51,8 @@
         "cmake.configureOnOpen": true,
         "cmake.languageSupport.dotnetPath": "/opt/dotnet/dotnet",
         "cmake.languageSupport.enableFileAPI": true,
-        "cmake.showSystemKits": false,
-        "cmake.options.statusBarVisibility": "visible"
+        "cmake.options.statusBarVisibility": "visible",
+        "cmake.additionalKits": [ "/opt/devcontainer/cmake-tools-kits.json" ]
       },
       "extensions": [
         "josetr.cmake-language-support-vscode",

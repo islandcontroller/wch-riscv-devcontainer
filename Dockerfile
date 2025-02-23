@@ -15,6 +15,7 @@ RUN apt-get update && \
     cu \
     curl \
     make \
+    python3-pygments \
     software-properties-common \
     tar \
     udev \
@@ -35,10 +36,6 @@ RUN curl -sLO ${CMAKE_URL} && \
     curl -sL ${CMAKE_HASH} | grep $(basename "${CMAKE_URL}") | sha256sum -c - && \
     tar -xf $(basename "${CMAKE_URL}") -C /usr --strip-components=1 && \
     rm $(basename "${CMAKE_URL}")
-
-# Prepare configuration storage
-ENV CMAKE_CONFIGS_PATH=/usr/share/cmake/configs.d
-RUN mkdir -p ${CMAKE_CONFIGS_PATH}
 
 #- .NET 6 Runtime --------------------------------------------------------------
 ARG DOTNET_VERSION=6.0.36
@@ -83,7 +80,7 @@ RUN mkdir -p ${MOUNRIVER_RULES_INSTALL_DIR} && \
     mv $MOUNRIVER_TMP/MRS-linux-x64/resources/app/resources/linux/components/WCH/Others/Firmware_Link/default ${MOUNRIVER_FIRMWARE_INSTALL_DIR} && \
     for i in $(find $MOUNRIVER_TMP/MRS-linux-x64/resources/app/resources/linux/components/WCH/SDK/default/RISC-V/ -name *.svd | uniq); do mv $i ${MOUNRIVER_SVD_INSTALL_DIR}; done && \
     rm -rf $MOUNRIVER_TMP
-COPY gcc-riscv-none-elf.cmake ${CMAKE_CONFIGS_PATH}
+COPY gcc-riscv-none-elf.cmake ${MOUNRIVER_TOOLCHAIN_INSTALL_DIR}
 ENV PATH=$PATH:${MOUNRIVER_TOOLCHAIN_INSTALL_DIR}/bin:${MOUNRIVER_OPENOCD_INSTALL_DIR}/bin
 
 # Fix broken openocd file permissions
@@ -145,6 +142,7 @@ ARG UTILS_INSTALL_DIR="/opt/devcontainer/"
 # Add setup files and register in path
 COPY setup-devcontainer ${UTILS_INSTALL_DIR}/bin/
 COPY install-rules ${UTILS_INSTALL_DIR}
+COPY cmake-tools-kits.json ${UTILS_INSTALL_DIR}
 ENV PATH=$PATH:${UTILS_INSTALL_DIR}/bin
 
 #- User setup ------------------------------------------------------------------

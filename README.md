@@ -29,8 +29,9 @@
 * Select `Dev Containers: Reopen in Container`
 
 For CMake projects:
-* Upon prompt, select the `GCC 12.x riscv-none-elf` CMake Kit. 
-  * Alternatively, a toolchain definition file is provided in: `$CMAKE_CONFIGS_PATH/gcc-riscv-none-elf.cmake`.
+* Upon prompt, select the `WCH RISC-V Toolchain x.x` CMake Kit. 
+  * The toolchain file is located at [`/opt/gcc-riscv-none-elf/gcc-riscv-none-elf.cmake`](gcc-riscv-none-elf.cmake)
+  * The CMake Kit definition for VS Code is located at [`/opt/devcontainer/cmake-tools-kits.json`](cmake-tools-kits.json)
 * Run `CMake: Configure`
 * Build using `CMake: Build [F7]`
 
