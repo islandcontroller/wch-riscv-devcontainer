@@ -14,7 +14,7 @@
   * SVD files
 * [CH32X035 PIOC Assembler](https://github.com/openwch/ch32x035/tree/main/EVT/EXAM/PIOC/Tool_Manual/Tool) Version 3.1
 
-* [CMake](https://cmake.org/download) Version 3.31.3
+* [CMake](https://cmake.org/download) Version 3.31.5
 * [ch32-rs/wchisp](https://github.com/ch32-rs/wchisp/) Version 0.3.0
 * [ch32-rs/wlink](https://github.com/ch32-rs/wlink/) Version 0.1.1
 
