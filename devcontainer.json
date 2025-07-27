@@ -55,7 +55,6 @@
         "cmake.additionalKits": [ "/opt/devcontainer/cmake-tools-kits.json" ]
       },
       "extensions": [
-        "josetr.cmake-language-support-vscode",
         "keroc.hex-fmt",
         "ms-vscode.cpptools-extension-pack",
         "ms-vscode.cmake-tools",

@@ -38,17 +38,11 @@ RUN curl -sLO ${CMAKE_URL} && \
     rm $(basename "${CMAKE_URL}")
 
 #- .NET 6 Runtime --------------------------------------------------------------
-ARG DOTNET_VERSION=6.0.36
-ARG DOTNET_URL="https://dotnetcli.azureedge.net/dotnet/Runtime/$DOTNET_VERSION/dotnet-runtime-$DOTNET_VERSION-linux-x64.tar.gz"
-ARG DOTNET_SHA512="afb6018fcabec468ccd7ae2f1131d8c9de7f4de7645b8f0c223efbbdbfdc515fb0642a399ebfe372c02044416c4cae463c9c802cd156b9da4181efff0e33ee94"
 ARG DOTNET_INSTALL_DIR="/opt/dotnet"
 
-# Download and install package
-RUN curl -sLO ${DOTNET_URL} && \
-    echo "${DOTNET_SHA512} $(basename ${DOTNET_URL})" | sha512sum -c - && \
-    mkdir -p ${DOTNET_INSTALL_DIR} && \
-    tar -xf $(basename "${DOTNET_URL}") -C ${DOTNET_INSTALL_DIR} --strip-components=1 && \
-    rm $(basename "${DOTNET_URL}")
+# Display warning for tools still using deprecated .NET version
+ADD dotnet-info.sh ${DOTNET_INSTALL_DIR}/
+RUN ln -s ${DOTNET_INSTALL_DIR}/dotnet-info.sh ${DOTNET_INSTALL_DIR}/dotnet
 ENV PATH=$PATH:${DOTNET_INSTALL_DIR}
 
 #- Mounriver Toolchain & Debugger ----------------------------------------------

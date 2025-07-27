@@ -6,7 +6,6 @@
 ![Screenshot](scr.PNG)
 
 ### Packages
-* [Microsoft .NET 6.0 Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/6.0) Version 6.0.36
 * [MounRiver Studio II (MRS2)](http://www.mounriver.com/download) Version 2.2.0
   * WCH-custom GNU toolchain for RISC-V Version 12.2.0
   * WCH-custom OpenOCD Version 0.11.0
