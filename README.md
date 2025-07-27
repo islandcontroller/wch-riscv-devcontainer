@@ -7,14 +7,14 @@
 
 ### Packages
 * [Microsoft .NET 6.0 Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/6.0) Version 6.0.36
-* [MounRiver Studio II (MRS2)](http://www.mounriver.com/download) Version 2.1.0
+* [MounRiver Studio II (MRS2)](http://www.mounriver.com/download) Version 2.2.0
   * WCH-custom GNU toolchain for RISC-V Version 12.2.0
   * WCH-custom OpenOCD Version 0.11.0
-  * ISP Firmware Version `v36`
+  * ISP Firmware Version `v38`
   * SVD files
 * [CH32X035 PIOC Assembler](https://github.com/openwch/ch32x035/tree/main/EVT/EXAM/PIOC/Tool_Manual/Tool) Version 3.1
 
-* [CMake](https://cmake.org/download) Version 4.0.0
+* [CMake](https://cmake.org/download) Version 4.0.3
 * [ch32-rs/wchisp](https://github.com/ch32-rs/wchisp/) Version 0.3.0
 * [ch32-rs/wlink](https://github.com/ch32-rs/wlink/) Version 0.1.1
 

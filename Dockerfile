@@ -27,7 +27,7 @@ RUN apt-get update && \
 WORKDIR /tmp
 
 #- CMake -----------------------------------------------------------------------
-ARG CMAKE_VERSION=4.0.0
+ARG CMAKE_VERSION=4.0.3
 ARG CMAKE_URL="https://github.com/Kitware/CMake/releases/download/v$CMAKE_VERSION/cmake-$CMAKE_VERSION-linux-x86_64.tar.gz"
 ARG CMAKE_HASH="https://github.com/Kitware/CMake/releases/download/v$CMAKE_VERSION/cmake-$CMAKE_VERSION-SHA-256.txt"
 
@@ -52,10 +52,10 @@ RUN curl -sLO ${DOTNET_URL} && \
 ENV PATH=$PATH:${DOTNET_INSTALL_DIR}
 
 #- Mounriver Toolchain & Debugger ----------------------------------------------
-ARG MOUNRIVER_VERSION=210
+ARG MOUNRIVER_VERSION=220
 #ARG MOUNRIVER_URL="http://file-oss.mounriver.com/upgrade/MounRiverStudio_Linux_X64_V${MOUNRIVER_VERSION}.tar.xz"
 ARG MOUNRIVER_URL="/tmp/MounRiverStudio_Linux_X64_V${MOUNRIVER_VERSION}.tar.xz"
-ARG MOUNRIVER_MD5="53daec6011d4b5b9302681a7237ffeb4"
+ARG MOUNRIVER_MD5="a30f0c3a1690360b4b9c5f20d65585e6"
 ARG MOUNRIVER_OPENOCD_INSTALL_DIR="/opt/openocd"
 ARG MOUNRIVER_TOOLCHAIN_INSTALL_DIR="/opt/gcc-riscv-none-elf"
 ARG MOUNRIVER_RULES_INSTALL_DIR="/opt/wch/rules"
@@ -70,7 +70,7 @@ RUN mkdir -p ${MOUNRIVER_RULES_INSTALL_DIR} && \
     mkdir -p ${MOUNRIVER_SVD_INSTALL_DIR} && \
     echo "${MOUNRIVER_MD5} $(basename ${MOUNRIVER_URL})" | md5sum -c - && \
     MOUNRIVER_TMP=$(mktemp -d) && \
-    tar -xf $(basename "${MOUNRIVER_URL}") -C $MOUNRIVER_TMP --strip-components=1 && \
+    tar -xf $(basename "${MOUNRIVER_URL}") -C $MOUNRIVER_TMP && \
     rm $(basename "${MOUNRIVER_URL}") && \
     mv $MOUNRIVER_TMP/beforeinstall/lib* /usr/lib/ && ldconfig && \
     mv $MOUNRIVER_TMP/beforeinstall/*.rules ${MOUNRIVER_RULES_INSTALL_DIR} && \
