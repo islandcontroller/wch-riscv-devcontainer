@@ -49,8 +49,6 @@
         "C_Cpp.default.intelliSenseMode": "linux-gcc-x86",
         
         "cmake.configureOnOpen": true,
-        "cmake.languageSupport.dotnetPath": "/opt/dotnet/dotnet",
-        "cmake.languageSupport.enableFileAPI": true,
         "cmake.options.statusBarVisibility": "visible",
         "cmake.additionalKits": [ "/opt/devcontainer/cmake-tools-kits.json" ]
       },
