@@ -38,7 +38,7 @@ jobs:
           CACHE_ACCESS_TOKEN: ${{ secrets.CACHE_ACCESS_TOKEN }}
           CACHE_GITHUB_USER: ${{ secrets.CACHE_GITHUB_USER }}
           CACHE_USER_REPO: ${{ secrets.CACHE_USER_REPO }}
-          CACHE_REPO_TAG: v2.2.0
+          CACHE_REPO_TAG: v2.3.0
         run: |
           .cache/fetch_cache.sh
       
