@@ -27,7 +27,7 @@ RUN apt-get update && \
 WORKDIR /tmp
 
 #- CMake -----------------------------------------------------------------------
-ARG CMAKE_VERSION=4.2.3
+ARG CMAKE_VERSION=4.3.2
 ARG CMAKE_URL="https://github.com/Kitware/CMake/releases/download/v$CMAKE_VERSION/cmake-$CMAKE_VERSION-linux-x86_64.tar.gz"
 ARG CMAKE_HASH="https://github.com/Kitware/CMake/releases/download/v$CMAKE_VERSION/cmake-$CMAKE_VERSION-SHA-256.txt"
 
@@ -46,10 +46,9 @@ RUN ln -s ${DOTNET_INSTALL_DIR}/dotnet-info.sh ${DOTNET_INSTALL_DIR}/dotnet
 ENV PATH=$PATH:${DOTNET_INSTALL_DIR}
 
 #- Mounriver Toolchain & Debugger ----------------------------------------------
-ARG MOUNRIVER_VERSION=230
-#ARG MOUNRIVER_URL="http://file-oss.mounriver.com/upgrade/MounRiverStudio_Linux_X64_V${MOUNRIVER_VERSION}.tar.xz"
+ARG MOUNRIVER_VERSION=240
 ARG MOUNRIVER_URL="/tmp/MounRiverStudio_Linux_X64_V${MOUNRIVER_VERSION}.tar.xz"
-ARG MOUNRIVER_MD5="149ee5f55189aab03ee1899856ff30f8"
+ARG MOUNRIVER_MD5="9ed98839da0e82eac2af50df93081c60"
 ARG MOUNRIVER_OPENOCD_INSTALL_DIR="/opt/openocd"
 ARG MOUNRIVER_TOOLCHAIN_INSTALL_DIR="/opt/gcc-riscv-none-elf"
 ARG MOUNRIVER_RULES_INSTALL_DIR="/opt/wch/rules"
@@ -57,7 +56,6 @@ ARG MOUNRIVER_FIRMWARE_INSTALL_DIR="/opt/wch/firmware"
 ARG MOUNRIVER_SVD_INSTALL_DIR="/opt/wch/svd"
 
 # Download and install package
-#RUN curl -sLO ${MOUNRIVER_URL}
 COPY MounRiverStudio_Linux_X64_V${MOUNRIVER_VERSION}.tar.xz /tmp
 RUN mkdir -p ${MOUNRIVER_RULES_INSTALL_DIR} && \
     mkdir -p ${MOUNRIVER_TOOLCHAIN_INSTALL_DIR} && \
@@ -66,13 +64,13 @@ RUN mkdir -p ${MOUNRIVER_RULES_INSTALL_DIR} && \
     MOUNRIVER_TMP=$(mktemp -d) && \
     tar -xf $(basename "${MOUNRIVER_URL}") -C $MOUNRIVER_TMP && \
     rm $(basename "${MOUNRIVER_URL}") && \
-    mv $MOUNRIVER_TMP/MRS2/beforeinstall/lib* /usr/lib/ && ldconfig && \
-    mv $MOUNRIVER_TMP/MRS2/beforeinstall/*.rules ${MOUNRIVER_RULES_INSTALL_DIR} && \
-    mv $MOUNRIVER_TMP/MRS2/MRS-linux-x64/resources/app/resources/linux/components/WCH/Toolchain/RISC-V\ Embedded\ GCC12 ${MOUNRIVER_TOOLCHAIN_INSTALL_DIR}/wch && \
-    rm $MOUNRIVER_TMP/MRS2/MRS-linux-x64/resources/app/resources/linux/components/WCH/OpenOCD/OpenOCD/bin/wch-arm.cfg && \
-    mv $MOUNRIVER_TMP/MRS2/MRS-linux-x64/resources/app/resources/linux/components/WCH/OpenOCD/OpenOCD ${MOUNRIVER_OPENOCD_INSTALL_DIR} && \
-    mv $MOUNRIVER_TMP/MRS2/MRS-linux-x64/resources/app/resources/linux/components/WCH/Others/Firmware_Link/default ${MOUNRIVER_FIRMWARE_INSTALL_DIR} && \
-    for i in $(find $MOUNRIVER_TMP/MRS2/MRS-linux-x64/resources/app/resources/linux/components/WCH/SDK/default/RISC-V/ -name *.svd | uniq); do mv $i ${MOUNRIVER_SVD_INSTALL_DIR}; done && \
+    mv $MOUNRIVER_TMP/beforeinstall/lib* /usr/lib/ && ldconfig && \
+    mv $MOUNRIVER_TMP/beforeinstall/*.rules ${MOUNRIVER_RULES_INSTALL_DIR} && \
+    mv $MOUNRIVER_TMP/MRS-linux-x64/resources/app/resources/linux/components/WCH/Toolchain/RISC-V\ Embedded\ GCC15 ${MOUNRIVER_TOOLCHAIN_INSTALL_DIR}/wch && \
+    rm $MOUNRIVER_TMP/MRS-linux-x64/resources/app/resources/linux/components/WCH/OpenOCD/OpenOCD/bin/wch-arm.cfg && \
+    mv $MOUNRIVER_TMP/MRS-linux-x64/resources/app/resources/linux/components/WCH/OpenOCD/OpenOCD ${MOUNRIVER_OPENOCD_INSTALL_DIR} && \
+    mv $MOUNRIVER_TMP/MRS-linux-x64/resources/app/resources/linux/components/WCH/Others/Firmware_Link/default ${MOUNRIVER_FIRMWARE_INSTALL_DIR} && \
+    for i in $(find $MOUNRIVER_TMP/MRS-linux-x64/resources/app/resources/linux/components/WCH/SDK/default/RISC-V/ -name *.svd | uniq); do mv $i ${MOUNRIVER_SVD_INSTALL_DIR}; done && \
     rm -rf $MOUNRIVER_TMP
 COPY gcc-riscv-none-elf.cmake ${MOUNRIVER_TOOLCHAIN_INSTALL_DIR}
 ENV PATH=$PATH:${MOUNRIVER_TOOLCHAIN_INSTALL_DIR}/bin:${MOUNRIVER_OPENOCD_INSTALL_DIR}/bin
@@ -82,7 +80,7 @@ RUN chmod +x ${MOUNRIVER_OPENOCD_INSTALL_DIR}/bin/openocd
 
 # Workaround: link to mis-named toolchain binaries
 RUN mkdir -p ${MOUNRIVER_TOOLCHAIN_INSTALL_DIR}/bin && \
-    for i in $(ls ${MOUNRIVER_TOOLCHAIN_INSTALL_DIR}/wch/bin/riscv-wch-elf-*); do k=$(echo "$(basename $i)" | sed s/wch/none/g); ln -s ${MOUNRIVER_TOOLCHAIN_INSTALL_DIR}/wch/bin/$(basename $i) ${MOUNRIVER_TOOLCHAIN_INSTALL_DIR}/bin/$k; done
+    for i in $(ls ${MOUNRIVER_TOOLCHAIN_INSTALL_DIR}/wch/bin/riscv32-wch-elf-*); do k=$(echo "$(basename $i)" | sed s/wch/none/g | sed s/riscv32-/riscv-/g); ln -s ${MOUNRIVER_TOOLCHAIN_INSTALL_DIR}/wch/bin/$(basename $i) ${MOUNRIVER_TOOLCHAIN_INSTALL_DIR}/bin/$k; done
 
 # Create links to SVD files
 RUN ln -s -t ${MOUNRIVER_SVD_INSTALL_DIR}/../ $(ls ${MOUNRIVER_SVD_INSTALL_DIR}/*.svd)
@@ -119,7 +117,7 @@ RUN curl -sLO ${WASM53B_URL} && \
 ENV PATH=$PATH:${WASM53B_INSTALL_DIR}
 
 #- Target flasing tool ---------------------------------------------------------
-ARG FLASHTOOL_VERSION=0.1.1
+ARG FLASHTOOL_VERSION=0.1.2
 ARG FLASHTOOL_URL="https://github.com/ch32-rs/wlink/releases/download/v${FLASHTOOL_VERSION}/wlink-v${FLASHTOOL_VERSION}-linux-x64.tar.gz"
 ARG FLASHTOOL_INSTALL_DIR="/opt/wlink"
 
